@@ -33,26 +33,10 @@ const data = [
 export default function App() {
   const [appIsReady, setAppIsReady] = React.useState(false);
 
-  // useEffect(() => {
-  //   SplashScreen.preventAutoHideAsync();
-  // }, [])
-
   const [fontsLoaded] = useFonts({
-    // RubikBold: require('./assets/fonts/Rubik/Rubik-Bold.ttf'),
-    // RubikMedium: require("./assets/fonts/Rubik/Rubik-Medium.ttf")
     Rubik_500Medium,
     Rubik_700Bold,
   });
-  
-  
-
-
-  // Rubik-Italic-VariableFont_wght
-  // let [fontsLoaded] = useFonts({
-  //   'RubikBold': require('./assets/fonts/Rubik/Rubik-Bold.ttf'),
-  //   "RubikMedium": require("./assets/fonts/Rubik/Rubik-Medium.ttf")
-  // });
-  
   
   const width = Dimensions.get('window').width;
   const height = Dimensions.get('window').height;
@@ -60,10 +44,9 @@ export default function App() {
   function CartScreen( { navigation }) {
     const [cartData, setCartData] = React.useState([]);
     const [fadeAnim] = React.useState(new Animated.Value(0));
-    // const [fadeCart] = React.useState(new Animated.Value(0));
 
     function removeFromCart(item) {
-        AsyncStorage.getItem('1234592342512354235875').then(cart => {
+        AsyncStorage.getItem('cart').then(cart => {
           console.log("\n\nitem for deleting from cart: ", item);
           console.log("\n\nfirstCart Before removing in removeFromCart func:", cart)
             
@@ -71,31 +54,27 @@ export default function App() {
               cart = JSON.parse(cart);
               cart = cart.filter(i => i.id === item.id && item.quantity > 1).length !== 0 ? cart.map(it => it.id === item.id ? { id: it.id, quantity: it.quantity - 1 } : it) : cart.filter(i => i.id !== item.id);
               console.log("\n\nCartBefore reducing them together:", cart)
-              // cart = cart.filter(item => item.quantity)
-              // cart = cart.length === 0 ? [] : [...[data, cart].reduce((m, a) => (a.forEach(o => m.has(o.id) && Object.assign(m.get(o.id), o) || m.set(o.id, o)), m), new Map).values()];
               cart = cart.filter(item => item.quantity)
               console.log("\n\nchangedCart:", cart)
-              AsyncStorage.setItem('1234592342512354235875', JSON.stringify(cart));
+              AsyncStorage.setItem('cart', JSON.stringify(cart));
               cart = cart.map((i, index) => {
                 return {...data.find(i1 => i1.id === i.id), ...i}
               })
               console.log("\n\ndata Succesfully changed for removing item, new cart:", cart)
               setCartData(cart)
             } else{
-              AsyncStorage.setItem('1234592342512354235875', []);
+              AsyncStorage.setItem('cart', []);
             }
-            // console.log("cart:", cart)
           })
         }
       
     React.useEffect(() => {
       const unsubscribe = navigation.addListener('focus', () => {
         // The screen is focused
-        // Call any action
+        // Call any action below
 
       const loadDataOnlyOnce = (data2) => {
         data2 = JSON.parse(data2);
-        // data2 = data2.length === 0 ? [] : [...[data, data2].reduce((m, a) => (a.forEach(o => m.has(o.id) && Object.assign(m.get(o.id), o) || m.set(o.id, o)), m), new Map).values()];
         data2 = data2.filter(item => item.quantity)
         console.log("\n\ndata2 before operation:", data2)
         console.log("\n\nObject.assign:", data2.map((i, index) => {
@@ -104,14 +83,11 @@ export default function App() {
         data2 = data2.map((i, index) => {
           return {...data.find(i1 => i1.id === i.id), ...i}
         })
-        // data2 = data2.map(item => })
-        // data2 = data2.map(item => {id: data.find(i => i.id === item.id).id, quantity: item.quantity})
-        // console.log("mapping:", data2.map(item => {...data.find(i => i.id === item.id), "quantity": item.quantity}))
         console.log("\n\ndata2:", data2)
         setCartData(data2)
       }
       
-      AsyncStorage.getItem('1234592342512354235875').then(cartData => {
+      AsyncStorage.getItem('cart').then(cartData => {
             if (cartData !== null) {
               console.log("\n\ncartDataForCart:", cartData)
               loadDataOnlyOnce(cartData)
@@ -143,7 +119,7 @@ export default function App() {
         <Button size='medium' disabled={false} accessoryLeft={(props) => <Icon {...props} name="car" />} style={{backgroundColor: "#8FB445", borderColor: "#8FB445", width: "90%", height: 50, borderRadius: 12, marginTop: 20,}} 
         onPress={() => {
           // console.log('Opening cart...')
-          AsyncStorage.getItem('accoun').then((ret) => {
+          AsyncStorage.getItem('userAccount').then((ret) => {
             console.log(ret)
             ret = JSON.parse(ret)
             setTimeout(() => {
@@ -163,7 +139,7 @@ export default function App() {
               })
 
             setTimeout(() => {
-              AsyncStorage.removeItem("1234592342512354235875");
+              AsyncStorage.removeItem("cart");
               setCartData([])
             }, 1000)
 
@@ -180,20 +156,6 @@ export default function App() {
             Заказать (курьером)
           </Text>
         </Button>
-      // <TouchableOpacity style={{marginTop: 20, borderRadius: 10, backgroundColor: "orange", width: "80%", height: 50, alignItems: 'center', justifyContent: "center" }}
-      //   onPress={() => {
-      //     console.log("cartDataWhileRemoving:", cartData)
-      //     Dialog.show({
-      //       type: ALERT_TYPE.SUCCESS,
-      //       title: 'Готово!',
-      //       textBody: 'Спасибо что заказли у нас! ❤ \nНаш курьер скоро прибудет 🧙‍♂️',
-      //       closeOnOverlayTap: true
-      //     })
-      //     }}>
-      //     <Text style={{textAlign: "center", fontSize: 18, fontFamily: "Rubik_500Medium", color: "white"}}>
-      //       Заказать!
-      //     </Text>
-      // </TouchableOpacity>
       ) : null}
       { cartData.length !== 0 ? <FlatList
           data={cartData}
@@ -269,15 +231,15 @@ export default function App() {
     const [fadeAnim] = React.useState(new Animated.Value(0));
 
     function addToCart(item) {
-      AsyncStorage.getItem('1234592342512354235875').then(cart => {
+      AsyncStorage.getItem('cart').then(cart => {
         // console.log("cart1:", cart)
         if (cart !== null) {
           cart = JSON.parse(cart);
           cart = cart.filter(i => i.id == item.id).length !== 0 ? cart.map(it => it.id === item.id ? { id: it.id, quantity: it.quantity + 1 } : it) : [...cart, { id: item.id, quantity: 1 } ];
-          AsyncStorage.setItem('1234592342512354235875', JSON.stringify(cart));
+          AsyncStorage.setItem('cart', JSON.stringify(cart));
           // setCartData(cart)
         } else{
-          AsyncStorage.setItem('1234592342512354235875', JSON.stringify([{id: item.id, quantity: 1}]));
+          AsyncStorage.setItem('cart', JSON.stringify([{id: item.id, quantity: 1}]));
         }
         // console.log("cart2:", cart)
       })
@@ -345,17 +307,6 @@ export default function App() {
                 </View>
               )}  
             />
-            {/* <View style={{bottom: 80, borderRadius: 12, width: "100%", alignItems: "center"}}>
-              <Button size='medium' disabled={false}  accessoryLeft={(props) => <Icon {...props} name="shopping-cart-outline" />} style={{elevation: 6, shadowOpacity: 0.7, position: "absolute", backgroundColor: "black", borderColor: "black", width: "65%", height: 50, borderRadius: 12, shadowOffset: {height: 5}}} onPress={() => {
-                // console.log('Opening cart...')
-                setVisible(true)
-                }}>
-                <Text>
-                  Корзина
-                </Text>
-              </Button>
-            </View> */}
-          {/* </Root> */}
           </Animated.View>
           
         </SafeAreaView>
@@ -437,7 +388,7 @@ export default function App() {
               <Button style={{width: "80%", borderRadius: 12, backgroundColor: "black", borderColor: "transparent"}} disabled={false}
                 onPress={() => {
                   const jsonValue = JSON.stringify({id: 0, name: value, address: value2})
-                  AsyncStorage.setItem("accoun", jsonValue)
+                  AsyncStorage.setItem("userAccount", jsonValue)
                   // alert("Спасибо!")
                   setSkip(true)
                   }}>
@@ -480,7 +431,7 @@ export default function App() {
 
   const [skip, setSkip] = React.useState(false);
 
-  const user = AsyncStorage.getItem('accoun')
+  const user = AsyncStorage.getItem('userAccount')
 
   if (user != null) {
     user.then((ret) => {
