@@ -47,20 +47,14 @@ export default function App() {
 
     function removeFromCart(item) {
         AsyncStorage.getItem('cart').then(cart => {
-          console.log("\n\nitem for deleting from cart: ", item);
-          console.log("\n\nfirstCart Before removing in removeFromCart func:", cart)
-            
             if (cart !== null) {
               cart = JSON.parse(cart);
               cart = cart.filter(i => i.id === item.id && item.quantity > 1).length !== 0 ? cart.map(it => it.id === item.id ? { id: it.id, quantity: it.quantity - 1 } : it) : cart.filter(i => i.id !== item.id);
-              console.log("\n\nCartBefore reducing them together:", cart)
               cart = cart.filter(item => item.quantity)
-              console.log("\n\nchangedCart:", cart)
               AsyncStorage.setItem('cart', JSON.stringify(cart));
               cart = cart.map((i, index) => {
                 return {...data.find(i1 => i1.id === i.id), ...i}
               })
-              console.log("\n\ndata Succesfully changed for removing item, new cart:", cart)
               setCartData(cart)
             } else{
               AsyncStorage.setItem('cart', []);
@@ -76,24 +70,19 @@ export default function App() {
       const loadDataOnlyOnce = (data2) => {
         data2 = JSON.parse(data2);
         data2 = data2.filter(item => item.quantity)
-        console.log("\n\ndata2 before operation:", data2)
-        console.log("\n\nObject.assign:", data2.map((i, index) => {
           return {...data.find(i1 => i1.id === i.id), ...i}
         }));
         data2 = data2.map((i, index) => {
           return {...data.find(i1 => i1.id === i.id), ...i}
         })
-        console.log("\n\ndata2:", data2)
         setCartData(data2)
       }
       
       AsyncStorage.getItem('cart').then(cartData => {
             if (cartData !== null) {
-              console.log("\n\ncartDataForCart:", cartData)
               loadDataOnlyOnce(cartData)
-              console.log("\n\nData loaded")
               } else{
-                console.log("\n\ncartData:", cartData)
+                console.log("nothing")
               }
             })
 
@@ -109,18 +98,14 @@ export default function App() {
     return unsubscribe;
   }, [navigation]);
 
-  console.log("cartData after every fucking event:", cartData)
   return(
     <SafeAreaView>
         
     <Animated.View style={{opacity: fadeAnim, backgroundColor: "white", height: "100%", width: "100%", alignItems: "center", justifyContent: "center"}}>
-    {/* <Root theme="dark"> */}
       { cartData.length !== 0 ? (
         <Button size='medium' disabled={false} accessoryLeft={(props) => <Icon {...props} name="car" />} style={{backgroundColor: "#8FB445", borderColor: "#8FB445", width: "90%", height: 50, borderRadius: 12, marginTop: 20,}} 
         onPress={() => {
-          // console.log('Opening cart...')
           AsyncStorage.getItem('userAccount').then((ret) => {
-            console.log(ret)
             ret = JSON.parse(ret)
             setTimeout(() => {
               Animated.timing(fadeAnim, {
@@ -187,7 +172,6 @@ export default function App() {
                 </TouchableOpacity>
                 <TouchableOpacity style={{borderRadius: 10, backgroundColor: "black", width: 204, height: 40, alignItems: 'center', justifyContent: "center" }}
                 onPress={() => {
-                  console.log("cartDataWhileRemoving:", cartData)
                   Toast.show({
                     type: ALERT_TYPE.SUCCESS,
                     title: 'Готово!',
@@ -210,19 +194,7 @@ export default function App() {
           </Text>
         </View>
       )}
-      {/* <View style={{bottom: 80, borderRadius: 12, width: "100%", alignItems: "center"}}>
-        <Button size='medium' disabled={false}  accessoryLeft={(props) => <Icon {...props} name="shopping-cart-outline" />} style={{elevation: 6, shadowOpacity: 0.7, position: "absolute", backgroundColor: "black", borderColor: "black", width: "65%", height: 50, borderRadius: 12, shadowOffset: {height: 5}}} onPress={() => {
-          // console.log('Opening cart...')
-          setVisible(true)
-          }}>
-          <Text>
-            Корзина
-          </Text>
-        </Button>
-      </View> */}
-    {/* </Root> */}
     </Animated.View>
-    
   </SafeAreaView>
 );
 }
@@ -232,16 +204,13 @@ export default function App() {
 
     function addToCart(item) {
       AsyncStorage.getItem('cart').then(cart => {
-        // console.log("cart1:", cart)
         if (cart !== null) {
           cart = JSON.parse(cart);
           cart = cart.filter(i => i.id == item.id).length !== 0 ? cart.map(it => it.id === item.id ? { id: it.id, quantity: it.quantity + 1 } : it) : [...cart, { id: item.id, quantity: 1 } ];
           AsyncStorage.setItem('cart', JSON.stringify(cart));
-          // setCartData(cart)
         } else{
           AsyncStorage.setItem('cart', JSON.stringify([{id: item.id, quantity: 1}]));
         }
-        // console.log("cart2:", cart)
       })
     }
 
@@ -261,7 +230,6 @@ export default function App() {
         <SafeAreaView>
           
           <Animated.View style={{opacity: fadeAnim, backgroundColor: "white", height: "100%", width: "100%", alignItems: "center", justifyContent: "center"}}>
-          {/* <Root theme="dark"> */}
             <FlatList
               data={data}
               keyExtractor={(item) => item.id}
@@ -305,10 +273,8 @@ export default function App() {
                     </TouchableOpacity>
                   </View>
                 </View>
-              )}  
-            />
+              )}/>
           </Animated.View>
-          
         </SafeAreaView>
   );
 }
@@ -435,7 +401,6 @@ export default function App() {
 
   if (user != null) {
     user.then((ret) => {
-        // console.log("\n\nreturn of getItem:", ret)
         if (ret === null) {
           // this is the first time
           setSkip(false)
@@ -447,7 +412,6 @@ export default function App() {
       }).catch(err => console.error(err.toString()));
     };
   
-  // console.log(skip)
   if (!fontsLoaded) {
     return (
       <AppLoading />
@@ -497,9 +461,7 @@ export default function App() {
                   }} component={CartScreen} />
               </Tab.Navigator>
             </NavigationContainer>
-            {/* <HomeScreen /> */}
           </ApplicationProvider>
-          
         </Root>
         <StatusBar backgroundColor='white' style='dark' />
         </>
