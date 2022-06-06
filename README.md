@@ -1,5 +1,5 @@
 # LifeCare Android App | Mini app(not for production use) | Pet Project | Freelance
-App, where you can buy/order drugs(medical supplies, vitamins, etc.)
+App, where you can buy/order medical supplies, vitamins, etc.
 
 # IMPORTANT: APP DOESN'T INCLUDE PAYMENT (app doesn't accept any payment) [it's just a school project for my friend]
 
