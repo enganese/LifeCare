@@ -1,3 +1,6 @@
+# !DANGEROUS! IF YOU HAVE PHOBIA OF BAD CODE, THEN DO NOT CHECK THE SOURCE CODE PLEASE!
+
+
 # LifeCare Android App | Mini app(not for production use) | Pet Project | Freelance
 App, where you can buy/order medical supplies, vitamins, etc.
 
